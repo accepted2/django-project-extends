@@ -1,0 +1,149 @@
+{% extends  'base.html' %}
+{% load humanize %}
+{% block content %}
+<div div class="container-fluid" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+        <div class="amount-date">
+            Last year: {{yearly_sum|intcomma}}
+        </div>
+        <div class="amount-date">
+            Last month: {{monthly_sum|intcomma}}
+        </div>
+        <div class="amount-date">
+            Last week: {{weekly_sum|intcomma}}
+        </div>
+        {% if category %}
+        <div class="amount-date">
+            Amount of {{category}}: {{category_sum | intcomma}}
+        </div>
+        {% endif %}
+    </div>
+    <div
+        style="background-color: rgb(237, 204, 204); padding: 30px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); max-width: 500px; width: 100%; margin-right:38%">
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group ">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <br>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-outline-secondary" style="margin-top: 0.2rem;">Submit</button>
+        </form>
+    </div>
+</div>
+<br>
+<br>
+{% if expenses %}
+<div class="container-fluid" style="margin-left: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div>
+        <table class="table table-hover">
+            <thead>
+                <tr class="table-warning">
+                    <th scope="col">Name</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Date</th>
+                    <th scope="col"><i class="fas fa-edit"></i></th>
+                    <th scope="col"><i class="fa fa-trash" aria-hidden="true"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr class="table-primary">
+                    <td>{{expense.name}}</td>
+                    <td class="amount">{{expense.amount|intcomma}}</td>
+                    <td class="category_vary">{{expense.category}}</td>
+                    <td>{{expense.date}}</td>
+                    <td> <a href="{% url 'edit' expense.id %}"><i
+                                class="fas fa-edit" style="color: green;"></i></a></td>
+                    <td> <a href="{% url 'delete' expense.id %}"><i
+                                class="fa fa-trash" aria-hidden="true" style="color: red;"></i></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="table-danger">
+                    <td colspan="6" id="total" style="text-align: left;">
+                        <strong>Total</strong><span id="total-value"
+                            style="margin-left: 30px; font-size: 1.1rem;"></span>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div>
+        <table class="table table-hover">
+            {% for daily_sum in daily_sums %}
+            <tr class="table-warning">
+                <td style="width: 30%;">{{daily_sum.date}}</td>
+                <td class="table-info" style=" width:30%">{{daily_sum.sum|intcomma}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class=" shadow-lg">
+            <h1 class="">Expense spread across categores</h1>
+            <div class=" shadow-lg">
+                <canvas id="myChart" class=""></canvas>
+            </div>
+        </div>
+    </div>
+    {% for item in filter_by_category %}
+    <h1 hidden></h1>
+    <h1 hidden id="total-{{item.category}}">{{item.total}} {{item.category}}</h1>
+    {% endfor %}
+</div>
+{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+    let amount = document.getElementsByClassName('amount')
+    let total = 0
+    Array.from(amount).forEach(element => {
+        total += parseFloat(element.textContent)
+    })
+    let totals = document.querySelectorAll(`h1[id^="total-"]`)
+    let categories_values = [];
+    let amounts = [];
+    totals.forEach(item => {
+        let totaltext = item.textContent
+
+        let parts = totaltext.split(' ')
+        let amount = parseFloat(parts[0])
+        let categories = parts[1]
+        amounts.push(amount)
+        categories_values.push(categories)
+
+    })
+
+
+
+    console.log(categories_values);
+    console.log(amounts);
+    document.getElementById('total-value').textContent = total
+
+
+
+
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: categories_values,
+            datasets: [{
+                label: '# of Votes',
+                data: amounts,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

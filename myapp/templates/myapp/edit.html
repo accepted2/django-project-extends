@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1> Edit </h1>
+<div class="container-fluid" style="display: flex; justify-content: center;">
+    <div
+        style="background-color: rgb(237, 204, 204); padding: 30px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); max-width: 500px; width: 100%;">
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group ">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <br>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-outline-secondary" style="margin-top: 0.2rem;">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+.custom-btn {
+    width: 80px;
+    /* Задаёт одинаковую ширину для кнопок */
+    height: 35px;
+    /* Задаёт одинаковую высоту для кнопок */
+    text-align: center;
+    /* Выравнивает текст по центру */
+    padding: 5px 10px;
+    /* Убирает лишние отступы */
+}
+
+.amount-date {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    /* Фиксированная ширина для выравнивания */
+}
+
+/* Flex-стили для контейнера */
+.container-fluid {
+    display: flex;
+    justify-content: space-between;
+    /* Создаёт расстояние между блоками */
+    align-items: flex-start;
+    /* Выравнивает элементы по верхнему краю */
+    margin-top: 20px;
+    /* Добавляет отступ сверху */
+}
+
+canvas#myChart {
+    width: 80%;
+    /* Ширина графика относительно родительского блока */
+    height: 290px !important;
+    /* Высота графика */
+    margin-top: 20px;
+    /* Отступ сверху */
+    margin-left: auto;
+    /* Центрирование по горизонтали */
+    margin-right: auto;
+    /* Центрирование по горизонтали */
+    display: block;
+    /* Чтобы canvas был блочным элементом */
+}
